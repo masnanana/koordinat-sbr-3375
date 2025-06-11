@@ -1,35 +1,39 @@
-import streamlit as st
 import geopandas as gpd
 from shapely.geometry import Point
 
-@st.cache_data
-def load_geojson()
-    return gpd.read_file(data.geojson).to_crs(epsg=4326)
+# Ambil GeoJSON langsung dari GitHub kamu
+url = "https://raw.githubusercontent.com/masnanana/koordinat-sbr-3375/main/data.geojson"
 
-gdf = load_geojson()
+# Baca file GeoJSON
+gdf = gpd.read_file(url)
 
-st.title(🔍 Cek Lokasi Berdasarkan Koordinat)
-st.write(Masukkan koordinat dari Google Maps (format `lat, lon`))
+# Pastikan dalam sistem koordinat EPSG:4326 (lat, lon)
+if gdf.crs is None or gdf.crs.to_string() != "EPSG:4326":
+    gdf = gdf.to_crs(epsg=4326)
 
-koordinat = st.text_input(Contoh `-6.88, 109.68`)
+# Input koordinat Google Maps
+try:
+    koordinat = input("📍 Masukkan koordinat dari Google Maps (format: lat, lon): ")
+    lat_str, lon_str = koordinat.split(",")
+    lat = float(lat_str.strip())
+    lon = float(lon_str.strip())
+except:
+    print("❌ Format salah. Gunakan format: -6.88, 109.68")
+    raise SystemExit
 
-if koordinat
-    try
-        lat_str, lon_str = koordinat.split(,)
-        lat = float(lat_str.strip())
-        lon = float(lon_str.strip())
-        titik = Point(lon, lat)
+# Buat titik shapely dari input
+titik = Point(lon, lat)
 
-        hasil = gdf[gdf.contains(titik)]
+# Cari poligon yang mengandung titik
+hasil = gdf[gdf.contains(titik)]
 
-        if not hasil.empty
-            row = hasil.iloc[0]
-            st.success(✅ Lokasi ditemukan)
-            st.write(fKabupaten {row['nmkab']})
-            st.write(fKecamatan {row['nmkec']})
-            st.write(fDesa {row['nmdesa']})
-            st.write(fSLS {row['nmsls']})
-        else
-            st.warning(❌ Titik tidak ada dalam batas wilayah.)
-    except
-        st.error(❌ Format salah. Gunakan format `-6.88, 109.68`)
+# Tampilkan hasil
+if not hasil.empty:
+    row = hasil.iloc[0]
+    print("✅ Titik berada di wilayah:")
+    print(f"- Kabupaten : {row.get('nmkab', '-')}")
+    print(f"- Kecamatan : {row.get('nmkec', '-')}")
+    print(f"- Desa      : {row.get('nmdesa', '-')}")
+    print(f"- SLS       : {row.get('nmsls', '-')}")
+else:
+    print("❌ Titik tidak berada dalam batas wilayah manapun.")
