@@ -40,7 +40,7 @@ if st.button("🔍 Cek Lokasi"):
                 st.success("✅ Titik berada di wilayah:")
                 st.markdown(f"- **Kabupaten**: {row.get('nmkab', '-')}")
                 st.markdown(f"- **Kecamatan**: {row.get('nmkec', '-')}")
-                st.markdown(f"- **Desa**: {row.get('nmdesa', '-')}")
+                st.markdown(f"- **Kelurahan**: {row.get('nmdesa', '-')}")
                 st.markdown(f"- **SLS**: {row.get('nmsls', '-')}")
             else:
                 st.error("❌ Titik tidak berada dalam batas wilayah manapun.")
