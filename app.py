@@ -1,7 +1,7 @@
 import streamlit as st
 import geopandas as gpd
 from shapely.geometry import Point
-from streamlit_js_eval import streamlit_js_eval
+from streamlit_js_eval import get_geolocation
 
 st.set_page_config(page_title="Cek Lokasi Gmaps", layout="centered")
 st.title("📍 Cek Wilayah SLS Kota Pekalongan")
@@ -44,27 +44,18 @@ if cek_manual:
         except:
             st.error("❌ Format salah. Gunakan format: `-6.8888, 109.6789`")
 
-# === Logika tombol Gmaps (dengan Promise)
+# === Logika tombol Gmaps (dengan get_geolocation)
 if ambil_gmaps:
-    lokasi = streamlit_js_eval(
-        js_expressions="""
-            new Promise((resolve, reject) => {
-                navigator.geolocation.getCurrentPosition(
-                    pos => resolve([pos.coords.latitude, pos.coords.longitude]),
-                    err => reject(err)
-                );
-            })
-        """,
-        key="ambil_gmaps",
-        want_result=True,
-    )
-
-    # Debug tampilkan hasil
+    lokasi = get_geolocation(key="ambil_gmaps")
     st.write("📡 Data dari browser:", lokasi)
 
-    if lokasi and isinstance(lokasi, list) and len(lokasi) == 2:
-        lat, lon = lokasi
-        st.success(f"📍 Koordinat dari browser: {lat}, {lon}")
+    if lokasi and isinstance(lokasi, dict):
+        lat = lokasi.get("coords", {}).get("latitude")
+        lon = lokasi.get("coords", {}).get("longitude")
+        if lat is not None and lon is not None:
+            st.success(f"📍 Koordinat dari browser: {lat}, {lon}")
+        else:
+            st.warning("⚠️ Koordinat tidak ditemukan.")
     else:
         st.warning("⚠️ Gagal mengambil titik. Coba ulang atau cek izin lokasi browser.")
 
