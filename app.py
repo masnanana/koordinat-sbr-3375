@@ -4,7 +4,7 @@ from shapely.geometry import Point
 from streamlit_js_eval import streamlit_js_eval
 
 st.set_page_config(page_title="Cek Lokasi Gmaps", layout="centered")
-st.title("📍 Cek Wilayah dari Koordinat Google Maps")
+st.title("📍 Cek Wilayah SLS Kota Pekalongan")
 
 # === Load GeoJSON ===
 @st.cache_data
@@ -26,7 +26,7 @@ col1, col2 = st.columns(2)
 with col1:
     cek_manual = st.button("🧭 Cek Lokasi Manual")
 with col2:
-    ambil_gmaps = st.button("🎯 Ambil Titik Gmaps")
+    ambil_gmaps = st.button("🎯 Ambil Titik Gmaps Sekarang")
 
 # === Variabel koordinat
 lat = lon = None
@@ -69,7 +69,7 @@ if lat is not None and lon is not None:
         row = hasil.iloc[0]
         st.markdown(f"""
             <div style="background-color:#f0f8ff;padding:15px;border-radius:10px;">
-                <b>Kabupaten:</b> {row.get('nmkab', '-')}<br>
+                <b>Kota:</b> {row.get('nmkab', '-')}<br>
                 <b>Kecamatan:</b> {row.get('nmkec', '-')}<br>
                 <b>Kelurahan:</b> {row.get('nmdesa', '-')}<br>
                 <b>SLS:</b> {row.get('nmsls', '-')}
