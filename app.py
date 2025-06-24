@@ -5,14 +5,7 @@ from streamlit_js_eval import streamlit_js_eval
 
 st.set_page_config(page_title="Cek Lokasi Gmaps", layout="centered")
 
-# === Inisialisasi session_state
-if "lat" not in st.session_state:
-    st.session_state.lat = None
-    st.session_state.lon = None
-    st.session_state.hasil = None
-    st.session_state.trigger_gmaps = False
-
-# === Judul
+# === Judul Tengah
 st.markdown("<h1 style='text-align: center;'>📍 Cek Wilayah SLS Kota Pekalongan</h1>", unsafe_allow_html=True)
 
 # === Load GeoJSON
@@ -30,36 +23,36 @@ gdf = load_geojson()
 st.markdown("### 📝 Masukkan Koordinat Manual (format: `lat, lon`)")
 koordinat_input = st.text_input("Contoh: `-6.8888, 109.6789`", key="manual_input")
 
-# === Tombol Aksi
+# === Tombol 1: Cek Manual
 cek_manual = st.button("🔍 Cek Lokasi Manual")
+
+# === Tombol 2: Ambil dari Gmaps
 ambil_gmaps = st.button("📡 Ambil Titik Gmaps Sekarang")
 
-st.markdown("<br>", unsafe_allow_html=True)
+st.markdown("<br>", unsafe_allow_html=True)  # Spasi kecil
 
-# === RESET HASIL saat tombol ditekan
-if cek_manual or ambil_gmaps:
-    st.session_state.lat = None
-    st.session_state.lon = None
-    st.session_state.hasil = None
+# === Variabel koordinat
+lat = lon = None
 
-# === Logika manual
+# === Logika tombol manual
 if cek_manual:
     if not koordinat_input:
         st.warning("Silakan masukkan koordinat terlebih dahulu.")
     else:
         try:
             lat_str, lon_str = koordinat_input.split(",")
-            st.session_state.lat = float(lat_str.strip())
-            st.session_state.lon = float(lon_str.strip())
-            st.success(f"Koordinat manual: {st.session_state.lat}, {st.session_state.lon}")
+            lat = float(lat_str.strip())
+            lon = float(lon_str.strip())
+            st.success(f"Koordinat manual berhasil dibaca: {lat}, {lon}")
         except:
             st.error("❌ Format salah. Gunakan format: `-6.8888, 109.6789`")
 
-# === Logika tombol Gmaps
+# === Trigger ambil gmaps
 if ambil_gmaps:
-    st.session_state.trigger_gmaps = True
+    st.session_state['trigger_gmaps'] = True
 
-if st.session_state.get("trigger_gmaps"):
+# === Eksekusi ambil gmaps
+if st.session_state.get("trigger_gmaps", False):
     lokasi = streamlit_js_eval(
         js_expressions="""
             new Promise((resolve, reject) => {
@@ -77,30 +70,28 @@ if st.session_state.get("trigger_gmaps"):
         want_result=True,
     )
 
-    st.session_state.trigger_gmaps = False  # reset trigger
-
     if lokasi is None:
-        st.error("❌ Tidak ada data lokasi yang diterima.")
+        st.error("❌ Tidak ada data lokasi yang diterima. Pastikan izin lokasi diaktifkan.")
     elif 'error' in lokasi:
-        st.warning(f"⚠️ {lokasi['error']}")
+        st.warning(f"⚠️ Gagal mengambil titik: {lokasi['error']}")
     else:
-        st.session_state.lat = lokasi.get("lat")
-        st.session_state.lon = lokasi.get("lon")
-        if st.session_state.lat and st.session_state.lon:
-            st.success(f"📍 Koordinat dari browser: {st.session_state.lat}, {st.session_state.lon}")
+        lat = lokasi.get("lat")
+        lon = lokasi.get("lon")
+        if lat is not None and lon is not None:
+            st.success(f"📍 Koordinat dari browser: {lat}, {lon}")
         else:
             st.warning("⚠️ Koordinat tidak ditemukan.")
 
-# === Cek hasil wilayah
-if st.session_state.lat is not None and st.session_state.lon is not None:
-    titik = Point(st.session_state.lon, st.session_state.lat)
-    st.session_state.hasil = gdf[gdf.contains(titik)]
+# === Cek hasil dari koordinat
+if lat is not None and lon is not None:
+    titik = Point(lon, lat)
+    hasil = gdf[gdf.contains(titik)]
 
     st.markdown("---")
-    st.markdown("### 🗺️ Hasil Cek Wilayah")
+    st.markdown("<h3>🗺️ Hasil Cek Wilayah:</h3>", unsafe_allow_html=True)
 
-    if not st.session_state.hasil.empty:
-        row = st.session_state.hasil.iloc[0]
+    if not hasil.empty:
+        row = hasil.iloc[0]
         st.markdown(f"""
             <div style="background-color:#e8f4ff;padding:20px;border-radius:10px;border-left:5px solid #1c8adb;">
                 <b>Kota:</b> {row.get('nmkab', '-')}<br>
