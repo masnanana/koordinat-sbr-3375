@@ -38,7 +38,7 @@ if st.button("🔍 Cek Lokasi Manual"):
     st.session_state.last_button = "manual"
     st.rerun()
 
-if st.button("📡 Ambil Titik Gmaps Sekarang"):
+if st.button("📡 Ambil Titik Koordinat Lokasi Saya Sekarang"):
     st.session_state.last_button = "gmaps"
     st.rerun()
 
