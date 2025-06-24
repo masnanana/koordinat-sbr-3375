@@ -4,7 +4,7 @@ from shapely.geometry import Point
 from streamlit_js_eval import streamlit_js_eval
 
 st.set_page_config(page_title="Cek Lokasi Gmaps", layout="centered")
-st.title("📍 Cek Wilayah SLS Kota Pekalongan")
+st.title("📍 Cek Wilayah SLS Kota Pekalongann")
 
 # === Load GeoJSON ===
 @st.cache_data
