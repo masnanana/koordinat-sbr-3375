@@ -44,18 +44,29 @@ if cek_manual:
         except:
             st.error("❌ Format salah. Gunakan format: `-6.8888, 109.6789`")
 
-# === Logika tombol Gmaps
+# === Logika tombol Gmaps (dengan Promise)
 if ambil_gmaps:
     lokasi = streamlit_js_eval(
-        js_expressions="navigator.geolocation.getCurrentPosition((pos) => [pos.coords.latitude, pos.coords.longitude])",
+        js_expressions="""
+            new Promise((resolve, reject) => {
+                navigator.geolocation.getCurrentPosition(
+                    pos => resolve([pos.coords.latitude, pos.coords.longitude]),
+                    err => reject(err)
+                );
+            })
+        """,
         key="ambil_gmaps",
         want_result=True,
     )
-    if lokasi:
+
+    # Debug tampilkan hasil
+    st.write("📡 Data dari browser:", lokasi)
+
+    if lokasi and isinstance(lokasi, list) and len(lokasi) == 2:
         lat, lon = lokasi
         st.success(f"📍 Koordinat dari browser: {lat}, {lon}")
     else:
-        st.info("📡 Menunggu izin lokasi dari browser...")
+        st.warning("⚠️ Gagal mengambil titik. Coba ulang atau cek izin lokasi browser.")
 
 # === Proses Hasil jika ada koordinat
 if lat is not None and lon is not None:
