@@ -4,7 +4,7 @@ from shapely.geometry import Point
 from streamlit_js_eval import streamlit_js_eval
 
 st.set_page_config(page_title="Cek Lokasi Gmaps", layout="centered")
-st.title("📍 Cek Wilayah SLS Kota Pekalongann")
+st.markdown("<h1 style='text-align: center;'>📍 Cek Wilayah SLS Kota Pekalongan</h1>", unsafe_allow_html=True)
 
 # === Load GeoJSON ===
 @st.cache_data
@@ -21,12 +21,14 @@ gdf = load_geojson()
 st.markdown("### 📝 Masukkan Koordinat Manual (format: `lat, lon`)")
 koordinat_input = st.text_input("Contoh: `-6.8888, 109.6789`", key="manual_input")
 
-# === Dua Tombol Sejajar ===
+# === Tombol-tombol sejajar dengan style berbeda
 col1, col2 = st.columns(2)
 with col1:
-    cek_manual = st.button("🧭 Cek Lokasi Manual")
+    cek_manual = st.button("🧭 Cek Lokasi Manual", type="primary")
 with col2:
-    ambil_gmaps = st.button("🎯 Ambil Titik Gmaps Sekarang")
+    ambil_gmaps = st.button("📡 Ambil Titik Gmaps Sekarang", type="secondary")
+
+st.markdown("<br>", unsafe_allow_html=True)  # Spasi tambahan
 
 # === Variabel koordinat
 lat = lon = None
@@ -88,12 +90,12 @@ if lat is not None and lon is not None:
     hasil = gdf[gdf.contains(titik)]
 
     st.markdown("---")
-    st.subheader("🗺️ Hasil Cek Wilayah:")
+    st.markdown("<h3>🗺️ Hasil Cek Wilayah:</h3>", unsafe_allow_html=True)
 
     if not hasil.empty:
         row = hasil.iloc[0]
         st.markdown(f"""
-            <div style="background-color:#f0f8ff;padding:15px;border-radius:10px;">
+            <div style="background-color:#e8f4ff;padding:20px;border-radius:10px;border-left:5px solid #1c8adb;">
                 <b>Kota:</b> {row.get('nmkab', '-')}<br>
                 <b>Kecamatan:</b> {row.get('nmkec', '-')}<br>
                 <b>Kelurahan:</b> {row.get('nmdesa', '-')}<br>
