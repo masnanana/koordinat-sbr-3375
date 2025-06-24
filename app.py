@@ -6,7 +6,7 @@ from streamlit_js_eval import streamlit_js_eval
 st.set_page_config(page_title="Cek Lokasi Gmaps", layout="centered")
 
 # === Judul Tengah
-st.markdown("<h1 style='text-align: center;'>📍 Cek Wilayah SLS Kota Pekalongan</h1>", unsafe_allow_html=True)
+st.markdown("<h1>Cek Wilayah SLS Kota Pekalongan</h1>", unsafe_allow_html=True)
 
 # === Load GeoJSON
 @st.cache_data
@@ -94,11 +94,11 @@ if lat is not None and lon is not None:
         row = hasil.iloc[0]
         st.markdown(f"""
             <div style="background-color:#e8f4ff;padding:20px;border-radius:10px;border-left:5px solid #1c8adb;">
-                <b>Kota:</b> {row.get('nmkab', '-')}<br>
-                <b>Kecamatan:</b> {row.get('nmkec', '-')}<br>
-                <b>Kelurahan:</b> {row.get('nmdesa', '-')}<br>
-                <b>SLS:</b> {row.get('nmsls', '-')}
+                <b>Kota :</b> {row.get('nmkab', '-')}<br>
+                <b>Kecamatan :</b> {row.get('nmkec', '-')}<br>
+                <b>Kelurahan :</b> {row.get('nmdesa', '-')}<br>
+                <b>SLS :</b> {row.get('nmsls', '-')}
             </div>
         """, unsafe_allow_html=True)
     else:
-        st.error("❌ Titik tidak berada dalam batas wilayah manapun.")
+        st.error("❌ Titik tidak berada dalam batas wilayah Kota Pekalongan.")
