@@ -8,9 +8,9 @@ st.set_page_config(page_title="Cek Lokasi Gmaps", layout="centered")
 # === Judul dengan Logo dan Tagline
 st.markdown("""
     <div style="text-align: center;">
-        <img src="https://raw.githubusercontent.com/masnanana/koordinat-sbr-3375/main/logo_tirto.png" width="100"/>
-        <div style="font-size:16px; margin-top:5px; color: #444;">Temukan Informasi Rukun Tetangga Otomatis</div>
-        <h1 style="margin-top:10px;">Cek Wilayah SLS Kota Pekalongan</h1>
+        <img src="https://raw.githubusercontent.com/masnanana/koordinat-sbr-3375/main/logo_tirto.png" width="500"/>
+
+        <h1 style="margin-top:10px;">Temukan Informasi Rukun Tetangga Otomatis BPS Kota Pekalongan</h1>
     </div>
 """, unsafe_allow_html=True)
 
