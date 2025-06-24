@@ -24,7 +24,7 @@ if "last_button" not in st.session_state:
     st.session_state.last_button = None
 
 # === Input manual
-st.markdown("### 📝 Masukkan Koordinat Manual")
+st.markdown("### 📝 Masukkan Koordinat Manual (format = lat, lan)")
 koordinat_input = st.text_input("Contoh: -6.8888, 109.6789", key="manual_input")
 
 # === Tombol vertikal (atas-bawah)
