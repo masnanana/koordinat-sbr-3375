@@ -94,10 +94,10 @@ if lat is not None and lon is not None:
         row = hasil.iloc[0]
         st.markdown(f"""
             <div style="background-color:#e8f4ff;padding:20px;border-radius:10px;border-left:5px solid #1c8adb;">
-                <b>Kota:</b> {row.get('nmkab', '-')}<br>
-                <b>Kecamatan:</b> {row.get('nmkec', '-')}<br>
-                <b>Kelurahan:</b> {row.get('nmdesa', '-')}<br>
-                <b>SLS:</b> {row.get('nmsls', '-')}
+                <b>Kota :</b> {row.get('nmkab', '-')}<br>
+                <b>Kecamatan :</b> {row.get('nmkec', '-')}<br>
+                <b>Kelurahan :</b> {row.get('nmdesa', '-')}<br>
+                <b>SLS :</b> {row.get('nmsls', '-')}
             </div>
         """, unsafe_allow_html=True)
     else:
