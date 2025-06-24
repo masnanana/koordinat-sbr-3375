@@ -1,7 +1,7 @@
 import streamlit as st
 import geopandas as gpd
 from shapely.geometry import Point
-from streamlit_js_eval import get_geolocation
+from streamlit_js_eval import streamlit_js_eval
 
 st.set_page_config(page_title="Cek Lokasi Gmaps", layout="centered")
 st.title("📍 Cek Wilayah SLS Kota Pekalongan")
@@ -44,22 +44,37 @@ if cek_manual:
         except:
             st.error("❌ Format salah. Gunakan format: `-6.8888, 109.6789`")
 
-# === Logika tombol Gmaps (dengan get_geolocation)
+# === Logika tombol Gmaps
 if ambil_gmaps:
-    lokasi = get_geolocation(key="ambil_gmaps")
+    lokasi = streamlit_js_eval(
+        js_expressions="""
+            new Promise((resolve, reject) => {
+                navigator.geolocation.getCurrentPosition(
+                    pos => resolve({lat: pos.coords.latitude, lon: pos.coords.longitude}),
+                    err => resolve({error: err.message})
+                );
+            })
+        """,
+        key="ambil_gmaps_eval",
+        want_result=True,
+    )
+    
     st.write("📡 Data dari browser:", lokasi)
 
     if lokasi and isinstance(lokasi, dict):
-        lat = lokasi.get("coords", {}).get("latitude")
-        lon = lokasi.get("coords", {}).get("longitude")
-        if lat is not None and lon is not None:
-            st.success(f"📍 Koordinat dari browser: {lat}, {lon}")
+        if 'error' in lokasi:
+            st.warning(f"⚠️ Gagal mengambil titik: {lokasi['error']}")
         else:
-            st.warning("⚠️ Koordinat tidak ditemukan.")
+            lat = lokasi.get("lat")
+            lon = lokasi.get("lon")
+            if lat is not None and lon is not None:
+                st.success(f"📍 Koordinat dari browser: {lat}, {lon}")
+            else:
+                st.warning("⚠️ Koordinat tidak ditemukan.")
     else:
-        st.warning("⚠️ Gagal mengambil titik. Coba ulang atau cek izin lokasi browser.")
+        st.warning("⚠️ Tidak ada data lokasi yang diterima.")
 
-# === Proses Hasil jika ada koordinat
+# === Proses hasil jika ada koordinat
 if lat is not None and lon is not None:
     titik = Point(lon, lat)
     hasil = gdf[gdf.contains(titik)]
