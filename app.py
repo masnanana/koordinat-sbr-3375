@@ -6,7 +6,7 @@ from streamlit_js_eval import streamlit_js_eval
 st.set_page_config(page_title="Cek Lokasi Gmaps", layout="centered")
 
 # === Judul Tengah
-st.markdown("<h1>📍 Cek Wilayah SLS Kota Pekalongan</h1>", unsafe_allow_html=True)
+st.markdown("<h1>Cek Wilayah SLS Kota Pekalongan</h1>", unsafe_allow_html=True)
 
 # === Load GeoJSON
 @st.cache_data
