@@ -27,18 +27,14 @@ if "last_button" not in st.session_state:
 st.markdown("### 📝 Masukkan Koordinat Manual")
 koordinat_input = st.text_input("Contoh: -6.8888, 109.6789", key="manual_input")
 
-# === Tombol eksklusif
-col1, col2 = st.columns(2)
-with col1:
-    if st.button("🔍 Cek Lokasi Manual"):
-        st.session_state.last_button = "manual"
-        st.rerun()
+# === Tombol vertikal (atas-bawah)
+if st.button("🔍 Cek Lokasi Manual"):
+    st.session_state.last_button = "manual"
+    st.rerun()
 
-with col2:
-    if st.button("📡 Ambil Titik Gmaps Sekarang"):
-        st.session_state.last_button = "gmaps"
-        st.rerun()
-
+if st.button("📡 Ambil Titik Gmaps Sekarang"):
+    st.session_state.last_button = "gmaps"
+    st.rerun()
 
 # === Eksekusi berdasarkan tombol terakhir
 lat = lon = None
