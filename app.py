@@ -5,10 +5,10 @@ from streamlit_js_eval import streamlit_js_eval
 
 st.set_page_config(page_title="Cek Lokasi Gmaps", layout="centered")
 
-# === Judul Tengah
+# === Judul
 st.markdown("<h1>Cek Wilayah SLS Kota Pekalongan</h1>", unsafe_allow_html=True)
 
-# === Load GeoJSON
+# === Load data
 @st.cache_data
 def load_geojson():
     url = "https://raw.githubusercontent.com/masnanana/koordinat-sbr-3375/main/data.geojson"
@@ -19,23 +19,28 @@ def load_geojson():
 
 gdf = load_geojson()
 
-# === Input Manual
-st.markdown("### 📝 Masukkan Koordinat Manual (format: `lat, lon`)")
-koordinat_input = st.text_input("Contoh: `-6.8888, 109.6789`", key="manual_input")
+# === Reset kondisi saat tombol lain ditekan
+if "last_button" not in st.session_state:
+    st.session_state.last_button = None
 
-# === Tombol 1: Cek Manual
-cek_manual = st.button("🔍 Cek Lokasi Manual")
+# === Input manual
+st.markdown("### 📝 Masukkan Koordinat Manual")
+koordinat_input = st.text_input("Contoh: -6.8888, 109.6789", key="manual_input")
 
-# === Tombol 2: Ambil dari Gmaps
-ambil_gmaps = st.button("📡 Ambil Titik Gmaps Sekarang")
+# === Tombol eksklusif
+col1, col2 = st.columns(2)
+with col1:
+    if st.button("🔍 Cek Lokasi Manual"):
+        st.session_state.last_button = "manual"
+        st.experimental_rerun()
+with col2:
+    if st.button("📡 Ambil Titik Gmaps Sekarang"):
+        st.session_state.last_button = "gmaps"
+        st.experimental_rerun()
 
-st.markdown("<br>", unsafe_allow_html=True)  # Spasi kecil
-
-# === Variabel koordinat
+# === Eksekusi berdasarkan tombol terakhir
 lat = lon = None
-
-# === Logika tombol manual
-if cek_manual:
+if st.session_state.last_button == "manual":
     if not koordinat_input:
         st.warning("Silakan masukkan koordinat terlebih dahulu.")
     else:
@@ -43,16 +48,11 @@ if cek_manual:
             lat_str, lon_str = koordinat_input.split(",")
             lat = float(lat_str.strip())
             lon = float(lon_str.strip())
-            st.success(f"Koordinat manual berhasil dibaca: {lat}, {lon}")
+            st.success(f"📍 Koordinat manual: {lat}, {lon}")
         except:
             st.error("❌ Format salah. Gunakan format: `-6.8888, 109.6789`")
 
-# === Trigger ambil gmaps
-if ambil_gmaps:
-    st.session_state['trigger_gmaps'] = True
-
-# === Eksekusi ambil gmaps
-if st.session_state.get("trigger_gmaps", False):
+elif st.session_state.last_button == "gmaps":
     lokasi = streamlit_js_eval(
         js_expressions="""
             new Promise((resolve, reject) => {
@@ -71,22 +71,18 @@ if st.session_state.get("trigger_gmaps", False):
     )
 
     if lokasi is None:
-        st.error("❌ Tidak ada data lokasi yang diterima. Pastikan izin lokasi diaktifkan.")
+        st.error("❌ Tidak ada data lokasi yang diterima.")
     elif 'error' in lokasi:
         st.warning(f"⚠️ Gagal mengambil titik: {lokasi['error']}")
     else:
         lat = lokasi.get("lat")
         lon = lokasi.get("lon")
-        if lat is not None and lon is not None:
-            st.success(f"📍 Koordinat dari browser: {lat}, {lon}")
-        else:
-            st.warning("⚠️ Koordinat tidak ditemukan.")
+        st.success(f"📍 Koordinat dari browser: {lat}, {lon}")
 
-# === Cek hasil dari koordinat
+# === Cek hasil koordinat
 if lat is not None and lon is not None:
     titik = Point(lon, lat)
     hasil = gdf[gdf.contains(titik)]
-
     st.markdown("---")
     st.markdown("<h3>🗺️ Hasil Cek Wilayah:</h3>", unsafe_allow_html=True)
 
@@ -101,4 +97,4 @@ if lat is not None and lon is not None:
             </div>
         """, unsafe_allow_html=True)
     else:
-        st.error("❌ Titik tidak berada dalam batas wilayah Kota Pekalongan.")
+        st.error("❌ Titik tidak berada dalam batas wilayah Kota Pekalongan")
