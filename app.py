@@ -44,35 +44,43 @@ if cek_manual:
         except:
             st.error("❌ Format salah. Gunakan format: `-6.8888, 109.6789`")
 
-# === Logika tombol Gmaps
+# === Trigger ambil gmaps pakai session_state
 if ambil_gmaps:
+    st.session_state['trigger_gmaps'] = True
+
+# === Hanya jalankan streamlit_js_eval jika sudah ditekan tombol
+if st.session_state.get("trigger_gmaps", False):
     lokasi = streamlit_js_eval(
         js_expressions="""
             new Promise((resolve, reject) => {
-                navigator.geolocation.getCurrentPosition(
-                    pos => resolve({lat: pos.coords.latitude, lon: pos.coords.longitude}),
-                    err => resolve({error: err.message})
-                );
+                if (!navigator.geolocation) {
+                    resolve({ error: "Geolocation tidak didukung browser ini." });
+                } else {
+                    navigator.geolocation.getCurrentPosition(
+                        pos => resolve({ lat: pos.coords.latitude, lon: pos.coords.longitude }),
+                        err => resolve({ error: err.message })
+                    );
+                }
             })
         """,
         key="ambil_gmaps_eval",
         want_result=True,
     )
-    
-    st.write("📡 Data dari browser:", lokasi)
 
-    if lokasi and isinstance(lokasi, dict):
-        if 'error' in lokasi:
-            st.warning(f"⚠️ Gagal mengambil titik: {lokasi['error']}")
-        else:
-            lat = lokasi.get("lat")
-            lon = lokasi.get("lon")
-            if lat is not None and lon is not None:
-                st.success(f"📍 Koordinat dari browser: {lat}, {lon}")
-            else:
-                st.warning("⚠️ Koordinat tidak ditemukan.")
+    st.subheader("📡 Debug Output dari Browser:")
+    st.json(lokasi)
+
+    if lokasi is None:
+        st.error("❌ Tidak ada data lokasi yang diterima. Pastikan izin lokasi diaktifkan.")
+    elif 'error' in lokasi:
+        st.warning(f"⚠️ Gagal mengambil titik: {lokasi['error']}")
     else:
-        st.warning("⚠️ Tidak ada data lokasi yang diterima.")
+        lat = lokasi.get("lat")
+        lon = lokasi.get("lon")
+        if lat is not None and lon is not None:
+            st.success(f"📍 Koordinat dari browser: {lat}, {lon}")
+        else:
+            st.warning("⚠️ Koordinat tidak ditemukan.")
 
 # === Proses hasil jika ada koordinat
 if lat is not None and lon is not None:
