@@ -32,11 +32,13 @@ col1, col2 = st.columns(2)
 with col1:
     if st.button("🔍 Cek Lokasi Manual"):
         st.session_state.last_button = "manual"
-        st.experimental_rerun()
+        st.rerun()
+
 with col2:
     if st.button("📡 Ambil Titik Gmaps Sekarang"):
         st.session_state.last_button = "gmaps"
-        st.experimental_rerun()
+        st.rerun()
+
 
 # === Eksekusi berdasarkan tombol terakhir
 lat = lon = None
