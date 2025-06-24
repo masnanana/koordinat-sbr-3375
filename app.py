@@ -4,9 +4,11 @@ from shapely.geometry import Point
 from streamlit_js_eval import streamlit_js_eval
 
 st.set_page_config(page_title="Cek Lokasi Gmaps", layout="centered")
+
+# === Judul Tengah
 st.markdown("<h1 style='text-align: center;'>📍 Cek Wilayah SLS Kota Pekalongan</h1>", unsafe_allow_html=True)
 
-# === Load GeoJSON ===
+# === Load GeoJSON
 @st.cache_data
 def load_geojson():
     url = "https://raw.githubusercontent.com/masnanana/koordinat-sbr-3375/main/data.geojson"
@@ -17,18 +19,17 @@ def load_geojson():
 
 gdf = load_geojson()
 
-# === Input Manual ===
+# === Input Manual
 st.markdown("### 📝 Masukkan Koordinat Manual (format: `lat, lon`)")
 koordinat_input = st.text_input("Contoh: `-6.8888, 109.6789`", key="manual_input")
 
-# === Tombol-tombol sejajar dengan style berbeda
-col1, col2 = st.columns(2)
-with col1:
-    cek_manual = st.button("🧭 Cek Lokasi Manual", type="primary")
-with col2:
-    ambil_gmaps = st.button("📡 Ambil Titik Gmaps Sekarang", type="secondary")
+# === Tombol 1: Cek Manual
+cek_manual = st.button("🔍 Cek Lokasi Manual")
 
-st.markdown("<br>", unsafe_allow_html=True)  # Spasi tambahan
+# === Tombol 2: Ambil dari Gmaps
+ambil_gmaps = st.button("📡 Ambil Titik Gmaps Sekarang")
+
+st.markdown("<br>", unsafe_allow_html=True)  # Spasi kecil
 
 # === Variabel koordinat
 lat = lon = None
@@ -46,11 +47,11 @@ if cek_manual:
         except:
             st.error("❌ Format salah. Gunakan format: `-6.8888, 109.6789`")
 
-# === Trigger ambil gmaps pakai session_state
+# === Trigger ambil gmaps
 if ambil_gmaps:
     st.session_state['trigger_gmaps'] = True
 
-# === Hanya jalankan streamlit_js_eval jika sudah ditekan tombol
+# === Eksekusi ambil gmaps
 if st.session_state.get("trigger_gmaps", False):
     lokasi = streamlit_js_eval(
         js_expressions="""
@@ -69,9 +70,6 @@ if st.session_state.get("trigger_gmaps", False):
         want_result=True,
     )
 
-    st.subheader("📡 Debug Output dari Browser:")
-    st.json(lokasi)
-
     if lokasi is None:
         st.error("❌ Tidak ada data lokasi yang diterima. Pastikan izin lokasi diaktifkan.")
     elif 'error' in lokasi:
@@ -84,7 +82,7 @@ if st.session_state.get("trigger_gmaps", False):
         else:
             st.warning("⚠️ Koordinat tidak ditemukan.")
 
-# === Proses hasil jika ada koordinat
+# === Cek hasil dari koordinat
 if lat is not None and lon is not None:
     titik = Point(lon, lat)
     hasil = gdf[gdf.contains(titik)]
