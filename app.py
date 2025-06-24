@@ -5,8 +5,15 @@ from streamlit_js_eval import streamlit_js_eval
 
 st.set_page_config(page_title="Cek Lokasi Gmaps", layout="centered")
 
-# === Judul
-st.markdown("<h1>Cek Wilayah SLS Kota Pekalongan</h1>", unsafe_allow_html=True)
+# === Judul dengan Logo dan Tagline
+st.markdown("""
+    <div style="text-align: center;">
+        <img src="https://raw.githubusercontent.com/masnanana/assets-public/main/logo_tirto.png" width="100"/>
+        <div style="font-size:16px; margin-top:5px; color: #444;">Temukan Informasi Rukun Tetangga Otomatis</div>
+        <h1 style="margin-top:10px;">Cek Wilayah SLS Kota Pekalongan</h1>
+    </div>
+""", unsafe_allow_html=True)
+
 
 # === Load data
 @st.cache_data
