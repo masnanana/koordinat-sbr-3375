@@ -38,7 +38,7 @@ if st.button("🔍 Cek Lokasi Manual"):
     st.session_state.last_button = "manual"
     st.rerun()
 
-if st.button("📡 Ambil Titik Koordinat Lokasi Saya Sekarang"):
+if st.button("📍 Ambil Titik Koordinat Lokasi Saya Sekarang"):
     st.session_state.last_button = "gmaps"
     st.rerun()
 
@@ -101,4 +101,4 @@ if lat is not None and lon is not None:
             </div>
         """, unsafe_allow_html=True)
     else:
-        st.error("❌ Titik tidak berada dalam batas wilayah Kota Pekalongan")
+        st.error("❌ Titik tidak berada dalam batas wilayah Kota Pekalongan, jika lokasi anda benar di Kota Pekalongan maka kemungkinan terdapat permasalahan pada konfigurasi Location pada device.")
