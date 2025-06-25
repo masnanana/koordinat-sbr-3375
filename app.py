@@ -75,7 +75,7 @@ elif st.session_state.last_button == "gmaps":
     )
 
     if lokasi is None:
-        st.error("❌ Tidak ada data lokasi yang diterima.")
+        st.error("❌ Tidak ada data lokasi yang diterima, refresh ulang halaman web.")
     elif 'error' in lokasi:
         st.warning(f"⚠️ Gagal mengambil titik: {lokasi['error']}")
     else:
