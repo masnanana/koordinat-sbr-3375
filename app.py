@@ -8,7 +8,7 @@ st.set_page_config(page_title="Cek Lokasi Gmaps", layout="centered")
 
 st.markdown("""
     <div style="text-align: center;">
-        <img src="https://raw.githubusercontent.com/masnanana/koordinat-sbr-3375/main/logo_tirtoo.png" width="300"/>      
+        <img src="https://raw.githubusercontent.com/masnanana/koordinat-sbr-3375/main/logo_tirtoo.png" width="250"/>      
     </div>
 """, unsafe_allow_html=True)
 
