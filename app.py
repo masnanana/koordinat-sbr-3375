@@ -101,4 +101,4 @@ if lat is not None and lon is not None:
             </div>
         """, unsafe_allow_html=True)
     else:
-        st.error("❌ Titik tidak berada dalam batas wilayah Kota Pekalongan, jika lokasi anda benar di Kota Pekalongan maka kemungkinan terdapat permasalahan pada konfigurasi Location pada device.")
+        st.error("❌ Titik tidak berada dalam batas wilayah Kota Pekalongan, jika lokasi anda benar di Kota Pekalongan maka kemungkinan terdapat permasalahan pada konfigurasi location pada device.")
