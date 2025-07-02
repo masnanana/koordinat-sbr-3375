@@ -93,7 +93,7 @@ if lat is not None and lon is not None:
     if not hasil.empty:
         row = hasil.iloc[0]
         st.markdown(f"""
-            <div style="background-color:#e8f4ff;padding:20px;border-radius:10px;border-left:5px solid #1c8adb;">
+            <div style="background-color:#f26b09;padding:20px;border-radius:10px;border-left:5px solid #bc6617;">
                 <b>Kota :</b> {row.get('nmkab', '-')}<br>
                 <b>Kecamatan :</b> {row.get('nmkec', '-')}<br>
                 <b>Kelurahan :</b> {row.get('nmdesa', '-')}<br>
